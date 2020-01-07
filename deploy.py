@@ -93,6 +93,10 @@ class photo_gallery(db.Model):
         self.parent = parent
 
 
+@app.route('/')
+def index():
+    return '<h1>Deployed</h1>'
+
 
 @app.route('/product', methods=['POST'])
 def add_person():
