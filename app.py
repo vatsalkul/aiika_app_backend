@@ -29,11 +29,14 @@ class galerySchema(ma.Schema):
 class DirectorySchema(ma.Schema):
     class Meta:
         fields = ('id', 'name', 'father', 'email', 'occupation', 'city', 'state', 'country', 'mobile')        
-                
 
 
-           
 
+
+
+class NewsSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'title', 'image', 'description', 'fb', 'yt')                
 # Init schema
 Product_schema = ProductSchema()
 Products_schema = ProductSchema(many=True)
@@ -44,6 +47,7 @@ galerys_schema = galerySchema(many=True)
 Directory_schema = DirectorySchema()
 Directorys_schema = DirectorySchema(many=True)
 
+News_schema = NewsSchema(many=True)
 
 
 # get all info
@@ -93,13 +97,29 @@ class photo_gallery(db.Model):
         self.parent = parent
 
 
+class News(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.Text)
+    image = db.Column(db.Text)
+    fb = db.Column(db.Text)
+    yt = db.Column(db.Text)
+    description = db.Column(db.Text)
+
+  
+    def __init__(self, title, image, fb, description, yt):
+        self.title = title
+        self.image = image
+        self.fb = fb
+        self.yt = yt
+        self.description = description
+
 @app.route('/')
 def index():
     return '<h1>Deployed</h1>'
 
 
-@app.route('/product', methods=['POST'])
-def add_person():
+@app.route('/directory', methods=['POST'])
+def add_to_directory():
     
     
         name = request.json['name']
@@ -112,9 +132,9 @@ def add_person():
         mobile = request.json['mobile']
         
         new_person = Directory(name, father, email, occupation, city, state, country, mobile)
-        email_exist = bool(Directory.query.filter_by(email=email).first())
+        already_exists = bool(Directory.query.filter_by(name=name).first() and Directory.query.filter_by(email=email).first() and Directory.query.filter_by(mobile=mobile).first())    
         
-        if email_exist:
+        if already_exists:
             return jsonify({'error': 'Details are already present'})
         else: 
             db.session.add(new_person)
@@ -123,11 +143,11 @@ def add_person():
         return jsonify({'success': 'You are successfully added to AIIKA Directory'})
 
 
-@app.route('/product', methods=['GET'])
-def get_state():
+@app.route('/news', methods=['GET'])
+def get_news():
 
-    all_State = photo_gallery.query.all()
-    result = galerys_schema.dump(all_State)
+    all_News = News.query.all()
+    result = News_schema.dump(all_News)
    
     return jsonify({"News" : result})
     
