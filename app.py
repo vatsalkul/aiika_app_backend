@@ -28,15 +28,12 @@ class galerySchema(ma.Schema):
 
 class DirectorySchema(ma.Schema):
     class Meta:
-        fields = ('id', 'name', 'father', 'email', 'occupation', 'city', 'state', 'country', 'mobile')        
-
-
-
-
+        fields = ('id', 'name', 'father', 'email', 'occupation', 'city', 'state', 'country', 'mobile', 'imageUrl')        
 
 class NewsSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'title', 'image', 'description', 'fb', 'yt')                
+        fields = ('id', 'title', 'image', 'description', 'fb', 'yt') 
+                       
 # Init schema
 Product_schema = ProductSchema()
 Products_schema = ProductSchema(many=True)
@@ -53,16 +50,17 @@ News_schema = NewsSchema(many=True)
 # get all info
 class Directory(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(200))
-    father = db.Column(db.String(200))
-    email = db.Column(db.String(200))
-    occupation = db.Column(db.String(200))
-    city = db.Column(db.String(200))
-    state = db.Column(db.String(200))
-    country = db.Column(db.String(200))
-    mobile = db.Column(db.String(200))
+    name = db.Column(db.Text)
+    father = db.Column(db.Text)
+    email = db.Column(db.Text)
+    occupation = db.Column(db.Text)
+    city = db.Column(db.Text)
+    state = db.Column(db.Text)
+    country = db.Column(db.Text)
+    mobile = db.Column(db.Text)
+    imageUrl = db.Column(db.Text)
    
-    def __init__(self, name, father, email, occupation, city, state, country, mobile):
+    def __init__(self, name, father, email, occupation, city, state, country, mobile, imageUrl):
         self.name = name
         self.father = father
         self.email = email
@@ -71,6 +69,7 @@ class Directory(db.Model):
         self.state = state
         self.country = country
         self.mobile = mobile
+        self.imageUrl = imageUrl
 
 class tbl_pages(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -130,6 +129,7 @@ def add_to_directory():
         state = request.json['state']
         country = request.json['country']
         mobile = request.json['mobile']
+        imageUrl = request.json['imageUrl']
         
         new_person = Directory(name, father, email, occupation, city, state, country, mobile)
         already_exists = bool(Directory.query.filter_by(name=name).first() and Directory.query.filter_by(email=email).first() and Directory.query.filter_by(mobile=mobile).first())    
