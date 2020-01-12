@@ -33,7 +33,6 @@ class DirectorySchema(ma.Schema):
 class NewsSchema(ma.Schema):
     class Meta:
         fields = ('id', 'title', 'image', 'description', 'fb', 'yt') 
-                       
 # Init schema
 Product_schema = ProductSchema()
 Products_schema = ProductSchema(many=True)
@@ -131,7 +130,7 @@ def add_to_directory():
         mobile = request.json['mobile']
         imageUrl = request.json['imageUrl']
         
-        new_person = Directory(name, father, email, occupation, city, state, country, mobile)
+        new_person = Directory(name, father, email, occupation, city, state, country, mobile, imageUrl)
         already_exists = bool(Directory.query.filter_by(name=name).first() and Directory.query.filter_by(email=email).first() and Directory.query.filter_by(mobile=mobile).first())    
         
         if already_exists:
